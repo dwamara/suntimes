@@ -26,30 +26,28 @@ public class SuntimesCalculator {
 		return getSuntimes(latitude, longitude, null);
 	}
 
-	private String readUrl(String urlString) throws Exception {
+	private String readUrl(final String urlString) throws Exception {
 		BufferedReader reader = null;
 		try {
-			URL url = new URL(urlString);
+			final URL url = new URL(urlString);
 			reader = new BufferedReader(new InputStreamReader(url.openStream()));
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			int read;
-			char[] chars = new char[1024];
+			final char[] chars = new char[1024];
 			while ((read = reader.read(chars)) != -1) {
 				buffer.append(chars, 0, read);
 			}
 
 			return buffer.toString();
 		} finally {
-			if (reader != null)
+			if (reader != null) {
 				reader.close();
+			}
 		}
 	}
 
 	private RemoteServiceResponse parseJsonResponse(final String jsonResponse) {
-		if (responseIsSuccess(jsonResponse)) {
-			return new Gson().fromJson(jsonResponse, RemoteServiceResponse.class);
-		}
-		return null;
+		return responseIsSuccess(jsonResponse) ? new Gson().fromJson(jsonResponse, RemoteServiceResponse.class) : null;
 	}
 
 	private String buildUrl(final String latitude, final String longitude, final String date) {
@@ -63,15 +61,15 @@ public class SuntimesCalculator {
 
 		return sb.toString();
 	}
-	private boolean validateCoordinate(final String coordiante) {
+	private boolean validateCoordinate(final String coordiante) throws Exception {
 		return true;
 	}
 
-	private boolean validateDateFormat(final String date) {
+	private boolean validateDateFormat(final String date) throws Exception {
 		return true;
 	}
 
 	private boolean responseIsSuccess(final String jsonResponse) {
-		return jsonResponse.contains("OK");
+		return jsonResponse != null && !jsonResponse.isEmpty() && jsonResponse.contains("OK");
 	}
 }
